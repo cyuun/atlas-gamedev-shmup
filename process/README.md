@@ -8,6 +8,7 @@ When we were thinking of different ways to vary what a shmup was in class, the m
 * Multiplayer with separate screens and the players have to randomly swap screens.
 * Multiplayer with only a single screen, but players can only shoot enemies of their same "class".
 * Multiplayer where one person is a strategist and controls all of the enemies.
+
 My single player ideas are more simple to implement maybe, but they don't stand out as much to me.
 * Singleplayer where your ship or gun or whatever changes every certain or random # of kills.
 * Singleplayer where the enemies don't get harder, but instead the player gets less and less powerful as the game goes on.
