@@ -1,1 +1,13 @@
-# process overview
+# Shmup Project Process Journal
+Peter Rosenthal  
+ATLS 4140
+## Shmup Idea Refinement - 17 Sept 2019
+When I was initially brainstorming ideas for my shmup, I always liked the ideas that involved multiple players the best. But I was worried about multiplayer being out of the scope of what I could do. But then I decided that if I limitted the controls, I could easily fit multiple players onto a single keyboard and a single screen, which would be much more reasonable to program. I intend my shmup to fit into the classic space shmup genre and theme of games, and not deviate too far from something you'd find in a late 70s early 80s arcade. In my multiplayer shmup, all players (3 or 4) will be on the same screen, scrolling horizontally with terrain in the style of Williams Electronic's 1981 shmup Defender. But the players will be locked to the left screen and can only move up and down. Each player will be given a color of their ship, and the enemies that appear will be in those 3 (or 4) colors. Players can only shoot enemies of their same color, and shooting the wrong color could even potentially punish the players. All of the players are working together on one single scoreline, but every random number of enemies the players are given a quick time warning and then they "switch ships" to a random other players ship. The players don't just change color, they swap locations too, and there is chaos for a couple of seconds while the players have to figure out which ship they jumped into. This is where team communication in real life would be helpful, and hopefully an indicator of good gameplay would be loud gameplay from the team. Because everybody is working on the same game score, players will eventually learn how to help the other players out before and after switching, so that everybody can play the game better.
+## Initial Shmup Ideation - 11 Sept 2019
+When we were thinking of different ways to vary what a shmup was in class, the multiplayer ideas really stuck out to me, and my favorite ideas all involve multiple players, which could possibly be too complicated for this project.
+* Multiplayer with separate screens and the players have to randomly swap screens.
+* Multiplayer with only a single screen, but players can only shoot enemies of their same "class".
+* Multiplayer where one person is a strategist and controls all of the enemies.
+My single player ideas are more simple to implement maybe, but they don't stand out as much to me.
+* Singleplayer where your ship or gun or whatever changes every certain or random # of kills.
+* Singleplayer where the enemies don't get harder, but instead the player gets less and less powerful as the game goes on.
