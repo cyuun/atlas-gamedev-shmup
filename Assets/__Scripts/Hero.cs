@@ -21,6 +21,9 @@ public class Hero : MonoBehaviour
 
     private GameObject lastTriggerGo    = null;
 
+    public delegate void WeaponFireDelegate();
+    public WeaponFireDelegate fireDelegate;
+
     private void Awake()
     {
         if (S == null) 
@@ -31,6 +34,7 @@ public class Hero : MonoBehaviour
         {
             Debug.LogError("Hero.Awake() - Attempted to assign second Hero.S!");
         }
+        fireDelegate += TempFire;
     }
 
     void Update()
@@ -45,9 +49,9 @@ public class Hero : MonoBehaviour
         
         transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && fireDelegate != null)
         {
-            TempFire();
+            fireDelegate();
         }
     }
 
