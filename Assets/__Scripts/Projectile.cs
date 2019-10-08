@@ -10,6 +10,7 @@ public class Projectile : MonoBehaviour
 
     [Header("Set Dynamically")]
     public Rigidbody rb;
+    public int identifierNum;
 
     [SerializeField]
     private WeaponType _type;

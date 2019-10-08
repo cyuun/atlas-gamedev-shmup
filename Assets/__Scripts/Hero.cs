@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class Hero : MonoBehaviour
 {
-    static public Hero S;
-
     [Header("Set in Inspector")]
     public float       speed            =  30;
     public float       rollMult         = -45;
@@ -14,42 +12,75 @@ public class Hero : MonoBehaviour
     public float       gameRestartDelay =  2f;
     public GameObject  projectilePrefab;
     public float       projectileSpeed  =  40;
+    public KeyCode     upKey;
+    public KeyCode     downKey;
+    public KeyCode     fireKey;
+    public int         identifierNum = 0;
 
     [Header("Set Dynamically")]
     [SerializeField]
     private float       _shieldLevel    =   1;
 
     private GameObject lastTriggerGo    = null;
+    private GameObject shieldGo;
+    private GameObject wingGo;
+    private GameObject cockCubeGo;
+    private GameObject weaponGo;
+    private Shield     shield;
+    private Renderer   wingRender;
+    private Renderer   cockCubeRender;
+    private Weapon     weapon;
 
     public delegate void WeaponFireDelegate();
     public WeaponFireDelegate fireDelegate;
 
     private void Awake()
     {
-        if (S == null) 
+        shieldGo = transform.Find("Shield").gameObject;
+        wingGo = transform.Find("Wing").gameObject;
+        cockCubeGo = transform.Find("Cockpit/Cube").gameObject;
+        weaponGo = transform.Find("Weapon").gameObject;
+        shield = shieldGo.GetComponent<Shield>();
+        wingRender = wingGo.GetComponent<Renderer>();
+        cockCubeRender = cockCubeGo.GetComponent<Renderer>();
+        weapon = weaponGo.GetComponent<Weapon>();
+        switch (identifierNum)
         {
-            S = this;
+            case 1:
+                wingRender.material = Main.S.materials[1];
+                cockCubeRender.material = Main.S.materials[1];
+                break;
+            case 2:
+                wingRender.material = Main.S.materials[2];
+                cockCubeRender.material = Main.S.materials[2];
+                break;
+            default:
+                wingRender.material = Main.S.materials[0];
+                cockCubeRender.material = Main.S.materials[0];
+                break;
         }
-        else
-        {
-            Debug.LogError("Hero.Awake() - Attempted to assign second Hero.S!");
-        }
-        //fireDelegate += TempFire;
     }
 
     void Update()
     {
-        float xAxis        = Input.GetAxis("Horizontal");
-        float yAxis        = Input.GetAxis("Vertical");
+        float yAxis = 0f;
+        if (Input.GetKey(upKey))
+        {
+            yAxis += 1f;
+        }
+
+        if (Input.GetKey(downKey))
+        {
+            yAxis -= 1f;
+        }
 
         Vector3 pos        = transform.position;
-        pos.x             += xAxis * speed * Time.deltaTime;
         pos.y             += yAxis * speed * Time.deltaTime;
         transform.position = pos;
         
-        transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+        transform.rotation = Quaternion.Euler(yAxis * pitchMult, 0, 0);
 
-        if (Input.GetKeyDown(KeyCode.Space) && fireDelegate != null)
+        if (Input.GetKeyDown(fireKey) && fireDelegate != null)
         {
             fireDelegate();
         }
@@ -60,7 +91,6 @@ public class Hero : MonoBehaviour
         GameObject projGo = Instantiate<GameObject>(projectilePrefab);
         projGo.transform.position = transform.position;
         Rigidbody rb = projGo.GetComponent<Rigidbody>();
-        //rb.velocity = Vector3.right * projectileSpeed;
 
         Projectile proj = projGo.GetComponent<Projectile>();
         proj.type = WeaponType.blaster;
@@ -68,11 +98,26 @@ public class Hero : MonoBehaviour
         rb.velocity = Vector3.right * tSpeed;
     }
 
+    public void AbsorbPowerUp(GameObject go)
+    {
+        Powerup pu = go.GetComponent<Powerup>();
+        switch (pu.type)
+        {
+            case WeaponType.shield:
+                shieldLevel++;
+                shield.changeShieldLevel(shieldLevel);
+                break;
+            default:
+                weapon.SetType(pu.type);
+                break;
+        }
+        pu.AbsorbedBy(this.gameObject);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         Transform rootT = other.gameObject.transform.root;
         GameObject go = rootT.gameObject;
-        //print("Triggered: " + go.name);
 
         if (go == lastTriggerGo) return;
         lastTriggerGo = go;
@@ -80,7 +125,12 @@ public class Hero : MonoBehaviour
         if (go.tag == "Enemy")
         {
             shieldLevel--;
+            shield.changeShieldLevel(shieldLevel);
             Destroy(go);
+        }
+        else if (go.tag == "PowerUp")
+        {
+            AbsorbPowerUp(go);
         }
         else
         {
