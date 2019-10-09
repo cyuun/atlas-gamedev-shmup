@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Hero : MonoBehaviour
 {
+    public static Hero S0;
+    public static Hero S1;
+    public static Hero S2;
+    
     [Header("Set in Inspector")]
     public float       speed            =  30;
     public float       rollMult         = -45;
@@ -44,19 +48,23 @@ public class Hero : MonoBehaviour
         wingRender = wingGo.GetComponent<Renderer>();
         cockCubeRender = cockCubeGo.GetComponent<Renderer>();
         weapon = weaponGo.GetComponent<Weapon>();
+        weapon.identifierNum = identifierNum;
         switch (identifierNum)
         {
+            case 0:
+                S0 = this;
+                wingRender.material = Main.S.materials[0];
+                cockCubeRender.material = Main.S.materials[0];
+                break;
             case 1:
+                S1 = this;
                 wingRender.material = Main.S.materials[1];
                 cockCubeRender.material = Main.S.materials[1];
                 break;
             case 2:
+                S2 = this;
                 wingRender.material = Main.S.materials[2];
                 cockCubeRender.material = Main.S.materials[2];
-                break;
-            default:
-                wingRender.material = Main.S.materials[0];
-                cockCubeRender.material = Main.S.materials[0];
                 break;
         }
     }
@@ -86,18 +94,6 @@ public class Hero : MonoBehaviour
         }
     }
 
-    private void TempFire()
-    {
-        GameObject projGo = Instantiate<GameObject>(projectilePrefab);
-        projGo.transform.position = transform.position;
-        Rigidbody rb = projGo.GetComponent<Rigidbody>();
-
-        Projectile proj = projGo.GetComponent<Projectile>();
-        proj.type = WeaponType.blaster;
-        float tSpeed = Main.GetWeaponDefinition(proj.type).velocity;
-        rb.velocity = Vector3.right * tSpeed;
-    }
-
     public void AbsorbPowerUp(GameObject go)
     {
         Powerup pu = go.GetComponent<Powerup>();
@@ -105,7 +101,7 @@ public class Hero : MonoBehaviour
         {
             case WeaponType.shield:
                 shieldLevel++;
-                shield.changeShieldLevel(shieldLevel);
+                shield.shieldLevel = shieldLevel;
                 break;
             default:
                 weapon.SetType(pu.type);
@@ -125,7 +121,7 @@ public class Hero : MonoBehaviour
         if (go.tag == "Enemy")
         {
             shieldLevel--;
-            shield.changeShieldLevel(shieldLevel);
+            shield.shieldLevel= shieldLevel;
             Destroy(go);
         }
         else if (go.tag == "PowerUp")
@@ -136,6 +132,13 @@ public class Hero : MonoBehaviour
         {
             print("Triggered by non-Enemy: " + go.name);
         }
+    }
+
+    public void ChangeInputKeys(KeyCode newUpKey, KeyCode newDownKey, KeyCode newFireKey)
+    {
+        upKey = newUpKey;
+        downKey = newDownKey;
+        fireKey = newFireKey;
     }
 
     public float shieldLevel

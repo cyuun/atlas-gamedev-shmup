@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class Main : MonoBehaviour
 {
-    static public Main S;
+    public  static Main S;
     private static Dictionary<WeaponType, WeaponDefinition> WEAP_DICT;
 
     [Header("Set in Inspector")]
@@ -23,8 +23,20 @@ public class Main : MonoBehaviour
         WeaponType.shield
     };
     public Material[]   materials;
+    public Vector3[,]   wrongEnemyCapsulePositions = new Vector3[3,5]
+    {
+        {new Vector3(-30,-35,0), new Vector3(-28,-35,0), new Vector3(-26,-35,0), new Vector3(-24,-35,0), new Vector3(-22,-35,0)},
+        {new Vector3(-10,-35,0), new Vector3(-8,-35,0), new Vector3(-6,-35,0), new Vector3(-4,-35,0), new Vector3(-2,-35,0)},
+        {new Vector3(10,-35,0), new Vector3(12,-35,0), new Vector3(14,-35,0), new Vector3(16,-35,0), new Vector3(18,-35,0)}
+    };
+    public KeyCode[,]   heroKeySets = new KeyCode[3,3]
+    {
+        {KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.RightArrow},
+        {KeyCode.P, KeyCode.Semicolon, KeyCode.Quote},
+        {KeyCode.W, KeyCode.S, KeyCode.D}
+    };
     public float        powerupSpawnPerSecond = 0.1f;
-    public float        powerupDefaultPadding = 1f;
+    public float        powerupDefaultPadding = 1;
 
     private BoundsCheck bndCheck;
 

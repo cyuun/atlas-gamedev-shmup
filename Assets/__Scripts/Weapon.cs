@@ -45,6 +45,7 @@ public class Weapon : MonoBehaviour
     public WeaponDefinition def;
     public GameObject collar;
     public float lastShotTime;
+    public int identifierNum;
 
     private Renderer collarRend;
 
@@ -141,6 +142,7 @@ public class Weapon : MonoBehaviour
 
         Projectile p = go.GetComponent<Projectile>();
         p.type = type;
+        p.identifierNum = identifierNum;
         lastShotTime = Time.time;
         return p;
     }
