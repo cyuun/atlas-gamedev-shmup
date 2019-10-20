@@ -16,14 +16,44 @@ public class Hero : MonoBehaviour
     public float       gameRestartDelay =  2f;
     public GameObject  projectilePrefab;
     public float       projectileSpeed  =  40;
+
+    [Header("Set Dynamically")]
     public KeyCode     upKey;
     public KeyCode     downKey;
     public KeyCode     fireKey;
-    public int         identifierNum = 0;
-
-    [Header("Set Dynamically")]
     [SerializeField]
     private float       _shieldLevel    =   1;
+    private int         _identifierNum;
+    public int          identifierNum
+    {
+        get { return _identifierNum; }
+        set 
+        { 
+            _identifierNum = value;
+            weapon.identifierNum = value;
+            switch (value)
+            {
+                case 0:
+                    S0 = this;
+                    wingRender.material = Main.S.materials[0];
+                    cockCubeRender.material = Main.S.materials[0];
+                    ChangeInputKeys(Main.S.heroKeySets[0, 0], Main.S.heroKeySets[0, 1], Main.S.heroKeySets[0, 2]);
+                    break;
+                case 1:
+                    S1 = this;
+                    wingRender.material = Main.S.materials[1];
+                    cockCubeRender.material = Main.S.materials[1];
+                    ChangeInputKeys(Main.S.heroKeySets[1, 0], Main.S.heroKeySets[1, 1], Main.S.heroKeySets[1, 2]);
+                    break;
+                case 2:
+                    S2 = this;
+                    wingRender.material = Main.S.materials[2];
+                    cockCubeRender.material = Main.S.materials[2];
+                    ChangeInputKeys(Main.S.heroKeySets[2, 0], Main.S.heroKeySets[2, 1], Main.S.heroKeySets[2, 2]);
+                    break;
+            } 
+        }
+    }
 
     private GameObject lastTriggerGo    = null;
     private GameObject shieldGo;
@@ -48,25 +78,6 @@ public class Hero : MonoBehaviour
         wingRender = wingGo.GetComponent<Renderer>();
         cockCubeRender = cockCubeGo.GetComponent<Renderer>();
         weapon = weaponGo.GetComponent<Weapon>();
-        weapon.identifierNum = identifierNum;
-        switch (identifierNum)
-        {
-            case 0:
-                S0 = this;
-                wingRender.material = Main.S.materials[0];
-                cockCubeRender.material = Main.S.materials[0];
-                break;
-            case 1:
-                S1 = this;
-                wingRender.material = Main.S.materials[1];
-                cockCubeRender.material = Main.S.materials[1];
-                break;
-            case 2:
-                S2 = this;
-                wingRender.material = Main.S.materials[2];
-                cockCubeRender.material = Main.S.materials[2];
-                break;
-        }
     }
 
     void Update()
@@ -153,5 +164,10 @@ public class Hero : MonoBehaviour
                 Main.S.DelayedRestart(gameRestartDelay);
             }
         }
+    }
+
+    public void Despawn()
+    {
+        Destroy(this.gameObject);
     }
 }

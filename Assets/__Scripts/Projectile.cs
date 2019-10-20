@@ -6,11 +6,12 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     private BoundsCheck bndCheck;
-    private Renderer rend;
 
     [Header("Set Dynamically")]
     public Rigidbody rb;
     public int identifierNum;
+    public MeshRenderer mRend;
+    public TrailRenderer tRend;
 
     [SerializeField]
     private WeaponType _type;
@@ -24,7 +25,8 @@ public class Projectile : MonoBehaviour
     void Awake()
     {
         bndCheck = GetComponent<BoundsCheck>();
-        rend = GetComponent<Renderer>();
+        mRend = GetComponent<MeshRenderer>();
+        tRend = GetComponent<TrailRenderer>();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -40,6 +42,5 @@ public class Projectile : MonoBehaviour
     {
         _type = eType;
         WeaponDefinition def = Main.GetWeaponDefinition(_type);
-        rend.material.color = def.projectileColor;
     }
 }

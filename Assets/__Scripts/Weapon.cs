@@ -143,6 +143,21 @@ public class Weapon : MonoBehaviour
         Projectile p = go.GetComponent<Projectile>();
         p.type = type;
         p.identifierNum = identifierNum;
+        switch (p.identifierNum)
+                {
+                    case 0:
+                        p.mRend.material = Main.S.materials[0];
+                        p.tRend.material = Main.S.materials[0];
+                        break;
+                    case 1:
+                        p.mRend.material = Main.S.materials[1];
+                        p.tRend.material = Main.S.materials[1];
+                        break;
+                    case 2:
+                        p.mRend.material = Main.S.materials[2];
+                        p.tRend.material = Main.S.materials[2];
+                        break;
+                }
         lastShotTime = Time.time;
         return p;
     }

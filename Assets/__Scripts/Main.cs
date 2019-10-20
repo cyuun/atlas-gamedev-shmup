@@ -12,6 +12,7 @@ public class Main : MonoBehaviour
 
     [Header("Set in Inspector")]
     public GameObject[] prefabEnemies;
+    public GameObject   prefabHero;
     public GameObject   powerupPrefab;
     public float        enemySpawnPerSecond = 0.5f;
     public float        enemyDefaultPadding = 1.5f;
@@ -45,14 +46,19 @@ public class Main : MonoBehaviour
         S = this;
         bndCheck = GetComponent<BoundsCheck>();
 
-        Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
-        Invoke(methodName: "SpawnPowerup", time:1f / powerupSpawnPerSecond);
-
         WEAP_DICT = new Dictionary<WeaponType, WeaponDefinition>();
         foreach (WeaponDefinition def in weaponDefinitions)
         {
             WEAP_DICT[def.type] = def;
         }
+        
+        SpawnHeros();
+    }
+
+    public void StartPlaying()
+    {
+       Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
+       Invoke(methodName: "SpawnPowerup", time:1f / powerupSpawnPerSecond); 
     }
 
     public void SpawnPowerup()
@@ -103,12 +109,30 @@ public class Main : MonoBehaviour
 
     public void DelayedRestart(float delay)
     {
-        Invoke("Restart", delay);
+        Invoke("SoftRestart", delay);
     }
 
     public void Restart()
     {
         SceneManager.LoadScene("_Scene_0");
+    }
+
+    public void SoftRestart()
+    {
+        if (Hero.S0 != null)
+        {
+            Hero.S0.Despawn();
+        }
+        if (Hero.S1 != null)
+        {
+            Hero.S1.Despawn();
+        }
+        if (Hero.S2 != null)
+        {
+            Hero.S2.Despawn();
+        }
+        UIDaddy.S.score = 0;
+        SpawnHeros();
     }
 
     static public WeaponDefinition GetWeaponDefinition(WeaponType wt)
@@ -118,5 +142,29 @@ public class Main : MonoBehaviour
             return WEAP_DICT[wt];
         }
         return new WeaponDefinition();
+    }
+
+    public void SpawnHeros()
+    {
+        GameObject h0 = Instantiate<GameObject>(prefabHero);
+        if (h0.GetComponent<Hero>() != null)
+        {
+            h0.GetComponent<Hero>().identifierNum = 0;
+        }
+        h0.transform.position = new Vector3(-50, 25, 0);
+
+        GameObject h1 = Instantiate<GameObject>(prefabHero);
+        if (h1.GetComponent<Hero>() != null)
+        {
+            h1.GetComponent<Hero>().identifierNum = 1;
+        }
+        h1.transform.position = new Vector3(-50, 0, 0);
+
+        GameObject h2 = Instantiate<GameObject>(prefabHero);
+        if (h2.GetComponent<Hero>() != null)
+        {
+            h2.GetComponent<Hero>().identifierNum = 2;
+        }
+        h2.transform.position = new Vector3(-50, -25, 0);
     }
 }
