@@ -1,7 +1,7 @@
 # atlas-gamedev-shmup
 ## Battle Team
 Created by Peter Rosenthal  
-For ATLS 4140 Game Development
+For ATLS 4140 Game Development  
 [Here is the game](https://cyuun.github.io/atlas-gamedev-shmup/finalGame-webBuild/)
 ### How to Play
 Battle Team is a team shmup that requires three players, and every player is working together to get as high of a score as possible in just one minute. Each player can only move up, down, or fire their weapon. The first player uses the keys W, S, and D; the second player uses P, ; (semicolon), and ' (quote); the third player uses the Up Arrow, Down Arrow, and the Right Arrow. Each player is assigned a color, and every enemy that spawns is given a color too. The team score only increases when a player hits an enemy of the same color. When a player hits an enemy of the wrong color the enemy is killed, but the score doesn't increase. Instead the player gets an "error gem" added to their stash at the bottom of the screen. Whenever any single player has 5 "error gems", the magic is too strong to be contained in just one ship, and every single player randomly swaps ships with another player. Whenever any team member dies, the entire team has to reset to the begining with 0 score, but the timer doesn't reset, so don't die too close to the end!
