@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "atlas-gamedev-shmup",
+"productVersion": "0.1",
+"dataUrl": "finalGame-webBuild.data.unityweb",
+"wasmCodeUrl": "finalGame-webBuild.wasm.code.unityweb",
+"wasmFrameworkUrl": "finalGame-webBuild.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.9f1"
+}

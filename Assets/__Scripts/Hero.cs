@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class Hero : MonoBehaviour
 {
-    static public Hero S;
-
+    public static Hero S0;
+    public static Hero S1;
+    public static Hero S2;
+    
     [Header("Set in Inspector")]
     public float       speed            =  30;
     public float       rollMult         = -45;
@@ -16,54 +18,113 @@ public class Hero : MonoBehaviour
     public float       projectileSpeed  =  40;
 
     [Header("Set Dynamically")]
+    public KeyCode     upKey;
+    public KeyCode     downKey;
+    public KeyCode     fireKey;
     [SerializeField]
     private float       _shieldLevel    =   1;
+    private int         _identifierNum;
+    public int          identifierNum
+    {
+        get { return _identifierNum; }
+        set 
+        { 
+            _identifierNum = value;
+            weapon.identifierNum = value;
+            switch (value)
+            {
+                case 0:
+                    S0 = this;
+                    wingRender.material = Main.S.materials[0];
+                    cockCubeRender.material = Main.S.materials[0];
+                    ChangeInputKeys(Main.S.heroKeySets[0, 0], Main.S.heroKeySets[0, 1], Main.S.heroKeySets[0, 2]);
+                    break;
+                case 1:
+                    S1 = this;
+                    wingRender.material = Main.S.materials[1];
+                    cockCubeRender.material = Main.S.materials[1];
+                    ChangeInputKeys(Main.S.heroKeySets[1, 0], Main.S.heroKeySets[1, 1], Main.S.heroKeySets[1, 2]);
+                    break;
+                case 2:
+                    S2 = this;
+                    wingRender.material = Main.S.materials[2];
+                    cockCubeRender.material = Main.S.materials[2];
+                    ChangeInputKeys(Main.S.heroKeySets[2, 0], Main.S.heroKeySets[2, 1], Main.S.heroKeySets[2, 2]);
+                    break;
+            } 
+        }
+    }
 
     private GameObject lastTriggerGo    = null;
+    private GameObject shieldGo;
+    private GameObject wingGo;
+    private GameObject cockCubeGo;
+    private GameObject weaponGo;
+    private Shield     shield;
+    private Renderer   wingRender;
+    private Renderer   cockCubeRender;
+    private Weapon     weapon;
+
+    public delegate void WeaponFireDelegate();
+    public WeaponFireDelegate fireDelegate;
 
     private void Awake()
     {
-        if (S == null) 
-        {
-            S = this;
-        }
-        else
-        {
-            Debug.LogError("Hero.Awake() - Attempted to assign second Hero.S!");
-        }
+        shieldGo = transform.Find("Shield").gameObject;
+        wingGo = transform.Find("Wing").gameObject;
+        cockCubeGo = transform.Find("Cockpit/Cube").gameObject;
+        weaponGo = transform.Find("Weapon").gameObject;
+        shield = shieldGo.GetComponent<Shield>();
+        wingRender = wingGo.GetComponent<Renderer>();
+        cockCubeRender = cockCubeGo.GetComponent<Renderer>();
+        weapon = weaponGo.GetComponent<Weapon>();
     }
 
     void Update()
     {
-        float xAxis        = Input.GetAxis("Horizontal");
-        float yAxis        = Input.GetAxis("Vertical");
+        float yAxis = 0f;
+        if (Input.GetKey(upKey))
+        {
+            yAxis += 1f;
+        }
+
+        if (Input.GetKey(downKey))
+        {
+            yAxis -= 1f;
+        }
 
         Vector3 pos        = transform.position;
-        pos.x             += xAxis * speed * Time.deltaTime;
         pos.y             += yAxis * speed * Time.deltaTime;
         transform.position = pos;
         
-        transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+        transform.rotation = Quaternion.Euler(yAxis * pitchMult, 0, 0);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(fireKey) && fireDelegate != null)
         {
-            TempFire();
+            fireDelegate();
         }
     }
 
-    private void TempFire()
+    public void AbsorbPowerUp(GameObject go)
     {
-        GameObject projGo = Instantiate<GameObject>(projectilePrefab);
-        projGo.transform.position = transform.position;
-        Rigidbody rigidB = projGo.GetComponent<Rigidbody>();
-        rigidB.velocity = Vector3.right * projectileSpeed;
+        Powerup pu = go.GetComponent<Powerup>();
+        switch (pu.type)
+        {
+            case WeaponType.shield:
+                shieldLevel++;
+                shield.shieldLevel = shieldLevel;
+                break;
+            default:
+                weapon.SetType(pu.type);
+                break;
+        }
+        pu.AbsorbedBy(this.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         Transform rootT = other.gameObject.transform.root;
         GameObject go = rootT.gameObject;
-        //print("Triggered: " + go.name);
 
         if (go == lastTriggerGo) return;
         lastTriggerGo = go;
@@ -71,12 +132,24 @@ public class Hero : MonoBehaviour
         if (go.tag == "Enemy")
         {
             shieldLevel--;
+            shield.shieldLevel= shieldLevel;
             Destroy(go);
+        }
+        else if (go.tag == "PowerUp")
+        {
+            AbsorbPowerUp(go);
         }
         else
         {
             print("Triggered by non-Enemy: " + go.name);
         }
+    }
+
+    public void ChangeInputKeys(KeyCode newUpKey, KeyCode newDownKey, KeyCode newFireKey)
+    {
+        upKey = newUpKey;
+        downKey = newDownKey;
+        fireKey = newFireKey;
     }
 
     public float shieldLevel
@@ -91,5 +164,10 @@ public class Hero : MonoBehaviour
                 Main.S.DelayedRestart(gameRestartDelay);
             }
         }
+    }
+
+    public void Despawn()
+    {
+        Destroy(this.gameObject);
     }
 }
